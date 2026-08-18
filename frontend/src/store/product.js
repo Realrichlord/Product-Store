@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+const API_URL = import.meta.env.VITE_API_URL || "";
+
 export const useProductStore = create((set) => ({
   products: [],
   loading: false,
@@ -29,7 +31,7 @@ export const useProductStore = create((set) => ({
     }
 
     try {
-      const response = await fetch("/api/products", {
+      const response = await fetch(`${API_URL}/api/products`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,7 +56,9 @@ export const useProductStore = create((set) => ({
         success: true,
         message: data.message || "Product created successfully.",
       };
-    } catch {
+    } catch (error) {
+      console.error("Error creating product:", error);
+
       return {
         success: false,
         message: "Something went wrong while creating the product.",
@@ -70,7 +74,7 @@ export const useProductStore = create((set) => ({
     });
 
     try {
-      const res = await fetch("/api/products");
+      const res = await fetch(`${API_URL}/api/products`);
 
       if (!res.ok) {
         throw new Error("Failed to fetch products");
@@ -103,7 +107,7 @@ export const useProductStore = create((set) => ({
 
     try {
       const response = await fetch(
-        `/api/products/${productId}`
+        `${API_URL}/api/products/${productId}`
       );
 
       const data = await response.json();
@@ -148,7 +152,7 @@ export const useProductStore = create((set) => ({
   deleteProduct: async (productId) => {
     try {
       const response = await fetch(
-        `/api/products/${productId}`,
+        `${API_URL}/api/products/${productId}`,
         {
           method: "DELETE",
         }
@@ -189,7 +193,7 @@ export const useProductStore = create((set) => ({
   updateProduct: async (productId, updatedProduct) => {
     try {
       const response = await fetch(
-        `/api/products/${productId}`,
+        `${API_URL}/api/products/${productId}`,
         {
           method: "PUT",
           headers: {
